@@ -54,7 +54,7 @@ export function LoginForm({
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     // pass to action
-    const { data, error } = await authClient.signIn.email({
+    await authClient.signIn.email({
       email: values.email,
       password: values.password,
       callbackURL: "/dashboard",
@@ -68,6 +68,8 @@ export function LoginForm({
       }
     })
   }
+
+  const [showPassword, setShowPassword] = useState(false)
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -118,47 +120,44 @@ export function LoginForm({
                   <FormField
                     control={form.control}
                     name="password"
-                    render={({ field }) => {
-                      const [showPassword, setShowPassword] = useState(false)
-
-                      return (
-                        <div className="grid gap-2">
-                          <div className="flex items-center">
-                            <FormLabel htmlFor="password">Password</FormLabel>
-                            <a
-                              href="/reset"
-                              className="ml-auto text-sm underline-offset-4 hover:underline"
-                            >
-                              Forgot your password?
-                            </a>
-                          </div>
-                          <FormItem>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  {...field}
-                                  type={showPassword ? "text" : "password"} // Toggle input type
-                                  placeholder="Enter your password"
-                                  required
-                                />
-                                <button
-                                  type="button"
-                                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
-                                >
-                                  {showPassword ? (
-                                    <EyeOff className="w-5 h-5 opacity-75" />
-                                  ) : (
-                                    <Eye className="w-5 h-5 opacity-75" />
-                                  )}
-                                </button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <FormLabel htmlFor="password">Password</FormLabel>
+                          <a
+                            href="/reset"
+                            className="ml-auto text-sm underline-offset-4 hover:underline"
+                          >
+                            Forgot your password?
+                          </a>
                         </div>
-                      )
-                    }}
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                type={showPassword ? "text" : "password"} // Toggle input type
+                                placeholder="Enter your password"
+                                required
+                              />
+                              <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                                onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="w-5 h-5 opacity-75" />
+                                ) : (
+                                  <Eye className="w-5 h-5 opacity-75" />
+                                )}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </div>
+                    )
+                    }
                   />
                   <FormField
                     control={form.control}

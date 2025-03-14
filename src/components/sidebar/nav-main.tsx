@@ -1,4 +1,4 @@
-import { Home, Inbox, Image as ImageIcon, Settings } from "lucide-react";
+import { Home, Image as ImageIcon, Settings } from "lucide-react";
 import { SidebarGroup, SidebarGroupLabel, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "../ui/sidebar";
 
 const items = [

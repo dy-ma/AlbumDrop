@@ -61,7 +61,7 @@ export function SignUpForm({
 
   async function onSubmit(values: z.infer<typeof signupSchema>) {
     // pass to action
-    const { data, error } = await authClient.signUp.email({
+    await authClient.signUp.email({
       email: values.email,
       password: values.password,
       name: values.name
@@ -75,6 +75,7 @@ export function SignUpForm({
     })
   }
 
+  const [showPassword, setShowPassword] = useState(false)
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -137,47 +138,43 @@ export function SignUpForm({
                   <FormField
                     control={form.control}
                     name="password"
-                    render={({ field }) => {
-                      const [showPassword, setShowPassword] = useState(false)
-
-                      return (
-                        <div className="grid gap-2">
-                          <div className="flex items-center">
-                            <FormLabel htmlFor="password">Password</FormLabel>
-                          </div>
-                          <FormItem>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  {...field}
-                                  type={showPassword ? "text" : "password"} // Toggle input type
-                                  placeholder="Enter your password"
-                                  required
-                                />
-                                <button
-                                  type="button"
-                                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                                  onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
-                                >
-                                  {showPassword ? (
-                                    <EyeOff className="w-5 h-5 opacity-75" />
-                                  ) : (
-                                    <Eye className="w-5 h-5 opacity-75" />
-                                  )}
-                                </button>
-                              </div>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
+                    render={({ field }) => (
+                      <div className="grid gap-2">
+                        <div className="flex items-center">
+                          <FormLabel htmlFor="password">Password</FormLabel>
                         </div>
-                      )
-                    }}
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                type={showPassword ? "text" : "password"} // Toggle input type
+                                placeholder="Enter your password"
+                                required
+                              />
+                              <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                                onClick={() => setShowPassword(!showPassword)} // Toggle password visibility
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="w-5 h-5 opacity-75" />
+                                ) : (
+                                  <Eye className="w-5 h-5 opacity-75" />
+                                )}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </div>
+                    )
+                    }
                   />
                   <FormField
                     control={form.control}
                     name="passwordConfirmation"
                     render={({ field }) => {
-                      const [showPassword, setShowPassword] = useState(false)
 
                       return (
                         <div className="grid gap-2">
