@@ -225,7 +225,7 @@ export function SignUpForm({
                     )}
                   />
                   <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-                    {form.formState.isSubmitting ? <Loader2 className="animate-spin size-6" /> : "Login"}
+                    {form.formState.isSubmitting ? <Loader2 className="animate-spin size-6" /> : "Create Account"}
                   </Button>
                 </div>
                 <div className="text-center text-sm">

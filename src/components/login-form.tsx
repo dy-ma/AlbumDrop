@@ -26,7 +26,6 @@ import { z } from "zod"
 import { authClient } from "@/lib/auth-client"
 import { Checkbox } from "./ui/checkbox"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState } from "react"
 
@@ -40,9 +39,6 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -60,11 +56,13 @@ export function LoginForm({
       callbackURL: "/dashboard",
       rememberMe: true
     }, {
-      onSuccess: () => {
-        router.push("/dashboard")
-      },
       onError: (ctx) => {
-        toast.error(ctx.error.message || "Error logging in")
+        if (ctx.error.status === 403) {
+          toast.error("Please verify your email address")
+        }
+        else {
+          toast.error(ctx.error.message || "Error logging in")
+        }
       }
     })
   }

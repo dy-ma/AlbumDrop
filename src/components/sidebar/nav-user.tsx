@@ -30,6 +30,9 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import { User } from "better-auth"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 type NavUserProps = {
   user: User
@@ -37,6 +40,20 @@ type NavUserProps = {
 
 export function NavUser({ user }: NavUserProps) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
+
+  async function onSignout() {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/")
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message)
+        }
+      }
+    })
+  }
 
   return (
     <SidebarMenu>
@@ -105,7 +122,7 @@ export function NavUser({ user }: NavUserProps) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={onSignout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

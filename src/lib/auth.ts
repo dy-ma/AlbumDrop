@@ -7,6 +7,7 @@ import {
   user,
   verification
 } from "@/db/auth-schema";
+import { sendEmail } from "@/lib/ses";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -18,8 +19,30 @@ export const auth = betterAuth({
       verification,
     }
   }),
+  user: {
+    deleteUser: {
+      enabled: true,
+      sendDeleteAccountVerification: async ({ user, url }) => {
+        await sendEmail({
+          to: user.email,
+          subject: "Confirm Account Deletion",
+          body: `Click the link to delete your account: ${url}. This action is not reversible.`
+        })
+      }
+    },
+  },
   emailAndPassword: {
     enabled: true
+  },
+  emailVerification: {
+    sendOnSignUp: process.env.NODE_ENV === 'production', // only send on prod
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendEmail({
+        to: user.email,
+        subject: "Verify your email address",
+        body: `Click the link to verify your email: ${url}`
+      })
+    },
   },
   session: {
     cookieCache: {
