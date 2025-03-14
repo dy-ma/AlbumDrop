@@ -8,6 +8,11 @@ import {
   verification
 } from "@/db/auth-schema";
 import { sendEmail } from "@/lib/ses";
+import {
+  admin,
+  organization
+} from "better-auth/plugins"
+import { ac, superadmin, user as userRole } from "./permissions";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -32,7 +37,8 @@ export const auth = betterAuth({
     },
   },
   emailAndPassword: {
-    enabled: true
+    enabled: true,
+    requireEmailVerification: process.env.NODE_ENV === 'production'
   },
   emailVerification: {
     sendOnSignUp: process.env.NODE_ENV === 'production', // only send on prod
@@ -49,5 +55,15 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 5 * 60 // cache duration in seconds
     }
-  }
+  },
+  plugins: [
+    admin({
+      ac: ac,
+      roles: {
+        superadmin,
+        userRole
+      }
+    }),
+    organization(),
+  ]
 })
