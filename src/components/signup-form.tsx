@@ -64,7 +64,7 @@ export function SignUpForm({
     const { data, error } = await authClient.signUp.email({
       email: values.email,
       password: values.password,
-      name: values.name,
+      name: values.name
     }, {
       onSuccess: () => {
         router.push("/dashboard")
