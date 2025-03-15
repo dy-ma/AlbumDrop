@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  BadgeCheck,
   Bell,
   ChevronsUpDown,
   CreditCard,
@@ -33,6 +32,7 @@ import { User } from "better-auth"
 import { authClient } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import AccountProfileModal from "../profile-button"
 
 type NavUserProps = {
   user: User
@@ -108,10 +108,7 @@ export function NavUser({ user }: NavUserProps) {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
+              <AccountProfileModal user={user} />
               <DropdownMenuItem>
                 <CreditCard />
                 Billing

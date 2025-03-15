@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PhotoDrop",
-  description: "Photo Sharing Service",
+  title: "AlbumDrop",
+  description: "Share Anything",
 };
 
 export default function RootLayout({
