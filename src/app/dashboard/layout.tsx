@@ -11,7 +11,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   })
 
   if (!session?.user) {
-    redirect("/")
+    redirect("/login")
   }
 
   const user = session.user

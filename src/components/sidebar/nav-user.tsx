@@ -68,7 +68,7 @@ export function NavUser({ user }: NavUserProps) {
                 {
                   user.image
                     ? <AvatarImage src={user.image} alt={user.name} />
-                    : <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                    : <AvatarFallback className="rounded-lg">{user.name[0]}</AvatarFallback>
                 }
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -90,7 +90,7 @@ export function NavUser({ user }: NavUserProps) {
                   {
                     user.image
                       ? <AvatarImage src={user.image} alt={user.name} />
-                      : <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                      : <AvatarFallback className="rounded-lg">{user.name[0]}</AvatarFallback>
                   }
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
