@@ -19,6 +19,7 @@ export const metadata: Metadata = {
   description: "Share Anything",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{

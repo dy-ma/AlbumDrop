@@ -24,9 +24,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { authClient } from "@/lib/auth-client"
-import { Checkbox } from "./ui/checkbox"
+import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 
@@ -45,6 +45,8 @@ export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const searchParams = useSearchParams()
+  const callbackURL = searchParams.get('callbackURL') || "/app/u"
 
   const router = useRouter()
 
@@ -67,7 +69,7 @@ export function SignUpForm({
       name: values.name
     }, {
       onSuccess: () => {
-        router.push("/dashboard")
+        router.push(callbackURL)
       },
       onError: (ctx) => {
         toast.error(ctx.error.message || "Error creating your account")

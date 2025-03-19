@@ -1,5 +1,5 @@
 import { User } from "better-auth"
-import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar"
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 
 type ProfilePicProps = {
   user: User

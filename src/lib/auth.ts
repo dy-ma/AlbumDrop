@@ -5,14 +5,19 @@ import {
   account,
   session,
   user,
-  verification
+  verification,
+  organization as orgSchema,
+  member,
+  invitation
 } from "@/db/auth-schema";
 import { sendEmail } from "@/lib/ses";
 import {
-  admin,
-  organization
-} from "better-auth/plugins"
-import { ac, superadmin, user as userRole } from "./permissions";
+  ac,
+  admin as adminRole,
+  member as memberRole,
+  owner as ownerRole
+} from "./permissions";
+import { organization } from "better-auth/plugins"
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -22,6 +27,9 @@ export const auth = betterAuth({
       session,
       account,
       verification,
+      organization: orgSchema,
+      member,
+      invitation
     }
   }),
   user: {
@@ -57,13 +65,28 @@ export const auth = betterAuth({
     }
   },
   plugins: [
-    admin({
+    organization({
+      allowUserToCreateOrganization: async () => {
+        // TODO: check stripe subscription
+        return true
+      },
       ac: ac,
       roles: {
-        superadmin,
-        userRole
-      }
+        member: memberRole,
+        owner: ownerRole,
+        admin: adminRole,
+      },
+      async sendInvitationEmail(data) {
+        const inviteLink = `${process.env.NEXT_PUBLIC_BASE_URL}/accept-invitation/${data.id}`
+        sendEmail({
+          to: data.email,
+          subject: `Pasal: ${data.inviter.user.name} has invited you to join ${data.organization.name}`,
+          body: `Click the link to join the org. ${inviteLink}`
+        })
+      },
     }),
-    organization(),
   ]
 })
+
+export type ServerMember = typeof auth.$Infer.Member
+export type ServerOrganization = typeof auth.$Infer.Organization

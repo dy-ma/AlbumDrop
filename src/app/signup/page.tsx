@@ -1,6 +1,7 @@
 import { GalleryVerticalEnd } from "lucide-react"
 
-import { SignUpForm } from "@/components/signup-form"
+import { SignUpForm } from "@/components/auth/signup-form"
+import { Suspense } from "react"
 
 export default function Signup() {
   return (
@@ -12,7 +13,9 @@ export default function Signup() {
           </div>
           AlbumDrop
         </a>
-        <SignUpForm />
+        <Suspense>
+          <SignUpForm />
+        </Suspense>
       </div>
     </div>
   )

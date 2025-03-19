@@ -3,5 +3,6 @@
   "editor.detectIndentation": false,
   "editor.tabSize": 2,
   "editor.insertSpaces": true,
-  "explorer.sortOrder": "filesFirst"
+  "explorer.sortOrder": "filesFirst",
+  "typescript.preferences.autoImportFileExcludePatterns": ["@radix-ui"]
 }

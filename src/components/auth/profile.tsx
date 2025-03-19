@@ -18,16 +18,16 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { User } from "better-auth"
-import ProfilePic from "./profile-pic"
+import ProfilePic from "@/components/auth/profile-pic"
 import { useState } from "react"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "./ui/form"
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { authClient } from "@/lib/auth-client"
 import { toast } from "sonner"
-import { Separator } from "./ui/separator"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "./ui/alert-dialog"
+import { Separator } from "@/components/ui/separator"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 
 type AccountProps = {
   user: User
@@ -36,6 +36,7 @@ type AccountProps = {
 const updateProfileSchema = z.object({
   name: z.string().min(1, "Name is required")
 })
+
 
 export default function AccountProfile({ user }: AccountProps) {
   const [updatingProfile, setUpdatingProfile] = useState(false)
@@ -69,13 +70,14 @@ export default function AccountProfile({ user }: AccountProps) {
   }
 
   return (
-    <Tabs defaultValue="account" className="w-[400px]">
+    <Tabs defaultValue="account" className="">
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="account">Account</TabsTrigger>
         <TabsTrigger value="security">Security</TabsTrigger>
       </TabsList>
       <TabsContent value="account">
-        <Card>
+        {/* Remove the shadow to inset into parent modal */}
+        <Card className="border-0 shadow-none">
           <CardHeader>
             <CardTitle>Account</CardTitle>
             <CardDescription>
@@ -155,9 +157,9 @@ export default function AccountProfile({ user }: AccountProps) {
         </Card>
       </TabsContent>
       <TabsContent value="security">
-        <Card>
+        <Card className="border-0 shadow-none">
           <CardHeader>
-            <CardTitle>Password</CardTitle>
+            <CardTitle>TODO: Doesnt Work, Password</CardTitle>
             <CardDescription>
               Change your password here. After saving, you&apos;ll be logged out.
             </CardDescription>

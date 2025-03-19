@@ -24,10 +24,11 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { authClient } from "@/lib/auth-client"
-import { Checkbox } from "./ui/checkbox"
+import { Checkbox } from "../ui/checkbox"
 import { toast } from "sonner"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { useState } from "react"
+import { useSearchParams } from "next/navigation"
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -39,6 +40,11 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+
+  // Allow redirecting to different pages
+  const searchParams = useSearchParams()
+  const callbackURL = searchParams.get("callbackURL") || "/app/u"
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -53,7 +59,7 @@ export function LoginForm({
     await authClient.signIn.email({
       email: values.email,
       password: values.password,
-      callbackURL: "/dashboard",
+      callbackURL: callbackURL,
       rememberMe: true
     }, {
       onError: (ctx) => {

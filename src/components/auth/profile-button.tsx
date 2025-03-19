@@ -1,9 +1,10 @@
+"use client"
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import { User } from "better-auth";
-import AccountProfile from "./profile";
-import { DropdownMenuItem } from "./ui/dropdown-menu";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { BadgeCheck } from "lucide-react";
+import AccountProfile from "./profile";
 
 type Props = {
   user: User;
@@ -13,17 +14,22 @@ export default function AccountProfileModal({ user }: Props) {
   return (
     <Dialog>
       {/* Button to open the modal */}
-      <DialogTrigger asChild>
+      < DialogTrigger asChild >
         <DropdownMenuItem>
           <BadgeCheck />
           Account
         </DropdownMenuItem>
-      </DialogTrigger>
+      </DialogTrigger >
 
       {/* Modal content */}
-      <DialogContent className="max-w-lg">
+      < DialogContent
+        className="max-w-lg"
+      >
         <DialogHeader>
           <DialogTitle>Manage Account</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you&apos;re done.
+          </DialogDescription>
         </DialogHeader>
 
         {/* Render the AccountProfile inside the modal */}
@@ -35,7 +41,7 @@ export default function AccountProfileModal({ user }: Props) {
             Close
           </Button>
         </DialogClose>
-      </DialogContent>
-    </Dialog>
+      </DialogContent >
+    </Dialog >
   );
 }

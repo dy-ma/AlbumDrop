@@ -8,20 +8,24 @@ import {
 import { NavUser } from "./nav-user"
 import { User } from "better-auth"
 import { SidebarMain } from "./nav-main"
-import NavHeader from "./nav-header"
+import { TeamSwitcher } from "../auth/org-switcher"
+import { Organization } from "@/lib/auth-client"
 
 type SidebarProps = {
-  user: User
+  user: User,
+  org: Organization | null
 }
 
-export async function AppSidebar({ user }: SidebarProps) {
+export async function AppSidebar({ user, org }: SidebarProps) {
+  const route_slug = org ? org.slug : 'u'
+
   return (
     <Sidebar>
       <SidebarHeader>
-        <NavHeader />
+        <TeamSwitcher user={user} org={org} />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarMain />
+        <SidebarMain slug={route_slug} orgContext={org !== null} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
