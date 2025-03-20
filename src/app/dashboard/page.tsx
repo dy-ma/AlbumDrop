@@ -1,14 +1,13 @@
-"use client"
-
-import { useActiveOrganization } from "@/lib/auth-client"
+import { Suspense } from "react"
+import { DashboardContent, DashboardContentFallback } from "./dashboard-content"
 
 export default function DashboardPage() {
 
-  const { data: org } = useActiveOrganization()
-
   return (
     <div className="flex flex-1 flex-col gap-4 p-4">
-      <p className="font-semibold text-3xl">{org?.name} Projects</p>
+      <Suspense fallback={<DashboardContentFallback />}>
+        <DashboardContent />
+      </Suspense>
       <div className="grid auto-rows-min gap-4 md:grid-cols-3">
         <div className="aspect-video rounded-xl bg-muted/50" />
         <div className="aspect-video rounded-xl bg-muted/50" />

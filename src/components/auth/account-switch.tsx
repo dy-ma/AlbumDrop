@@ -118,6 +118,11 @@ export default function AccountSwitcher({
                         sessionToken: u.session.token,
                       });
                       setOpen(false);
+                      // Do a full refresh without cached layout to reload session cookies
+                      // We mainly need this to reload the orgs switcher
+                      if (typeof window !== undefined) {
+                        window.location.reload();
+                      }
                     }}
                     className="text-sm"
                   >

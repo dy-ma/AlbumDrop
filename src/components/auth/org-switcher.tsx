@@ -58,6 +58,11 @@ export default function OrgSwitcher({
               await authClient.organization.setActive({
                 organizationId: null
               })
+              // Do a full refresh without cached layout to reload session cookies
+              // We mainly need this to reload the orgs switcher
+              if (typeof window !== undefined) {
+                window.location.reload();
+              }
             }}
           >
             <IconWrapper>
@@ -76,6 +81,11 @@ export default function OrgSwitcher({
                 await authClient.organization.setActive({
                   organizationId: org.id
                 })
+                // Do a full refresh without cached layout to reload session cookies
+                // We mainly need this to reload the orgs switcher
+                if (typeof window !== undefined) {
+                  window.location.reload();
+                }
               }}
             >
               <IconWrapper>
