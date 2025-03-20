@@ -22,6 +22,13 @@
       "when": 1741994476744,
       "tag": "0002_dear_sunset_bain",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1742442741238,
+      "tag": "0003_perpetual_prodigy",
+      "breakpoints": true
     }
   ]
 }

@@ -1,117 +1,192 @@
 "use client"
-import { Building, ChevronsUpDown, Plus, User as UserIcon } from "lucide-react"
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
-import { User } from "better-auth"
-import { Organization } from "@/lib/auth-client"
-import Link from "next/link"
-import { authClient } from "@/lib/auth-client"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Building, ChevronsUpDown, Loader2, Plus, User } from "lucide-react";
+import { IconWrapper } from "../ui/icon-wrapper";
+import { Organization, Session } from "@/lib/auth-types";
+import { useEffect, useState } from "react";
+import { authClient, organization } from "@/lib/auth-client";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
-export type TeamSwitcherProps = {
-  user: User,
-  org: Organization | null
-}
+export default function OrgSwitcher({
+  session,
+  orgs,
+}: {
+  orgs?: Organization[],
+  session?: Session
+}) {
 
-export function TeamSwitcher({ user, org }: TeamSwitcherProps) {
-  const { isMobile } = useSidebar()
-  const { data: orgs } = authClient.useListOrganizations()
-
-  // We can calculate just once because
-  const isOrgContext = org !== null
+  const [activeOrg, setActiveOrg] = useState(orgs?.find(org => org.id === session?.session.activeOrganizationId) || null)
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {/* TODO: Implement org logo images */}
-                {isOrgContext
-                  ? <Building />
-                  : <UserIcon />
-                }
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {isOrgContext
-                    ? org?.name
-                    : user.name
-                  }
-                </span>
-              </div>
-              <ChevronsUpDown className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            align="start"
-            side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
+    <Dialog>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost">
+            {activeOrg
+              ? (
+                <>
+                  <IconWrapper>
+                    <Building />
+                  </IconWrapper>
+                  <span>{activeOrg.name}</span>
+                  <ChevronsUpDown />
+                </>
+              )
+              : (
+                <>
+                  <IconWrapper>
+                    <User />
+                  </IconWrapper>
+                  <span>Personal</span>
+                  <ChevronsUpDown />
+                </>
+              )}
+
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="min-w-56">
+          <DropdownMenuItem
+            className={!activeOrg ? "bg-secondary" : ""}
+            onClick={async () => {
+              if (!activeOrg) return;
+              setActiveOrg(null)
+              await authClient.organization.setActive({
+                organizationId: null
+              })
+            }}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Personal Account
-            </DropdownMenuLabel>
-            <Link href="/app/u">
-              <DropdownMenuItem>
-                <div className="flex size-6 items-center justify-center rounded-sm border">
-                  <UserIcon />
-                </div>
-                {user.name}
-                <DropdownMenuShortcut>⌘{1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            </Link>
-            <DropdownMenuSeparator />
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Organizations
-            </DropdownMenuLabel>
-            {orgs?.map((org, index) => (
-              <Link href={`/app/${org.slug}`} key={org.slug}>
-                <DropdownMenuItem
-                  key={org.name}
-                  className="gap-2 p-2"
-                >
-                  <div className="flex size-6 items-center justify-center rounded-sm border">
-                    {org.logo
-                      ? <Image src={org.logo} width={32} height={32} alt="Organization Logo" />
-                      : <Building />
-                    }
-                  </div>
-                  {org.name}
-                  <DropdownMenuShortcut>⌘{index + 2}</DropdownMenuShortcut>
-                </DropdownMenuItem>
-              </Link>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="">
-              <Link href="/create-org" className="flex gap-2">
-                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                  <Plus className="size-4" />
-                </div>
-                <div className="font-medium text-muted-foreground">Create Organization</div>
-              </Link>
+            <IconWrapper>
+              <User className="text-primary-foreground dark:text-primary" />
+            </IconWrapper>
+            Personal
+          </DropdownMenuItem>
+          {orgs?.map((org) => (
+            <DropdownMenuItem
+              key={org.id}
+              className={org.id === activeOrg?.id ? "bg-secondary" : ""}
+              onClick={async () => {
+                if (org.id === activeOrg?.id) return;
+                // optimistic ui update
+                setActiveOrg(org)
+                await authClient.organization.setActive({
+                  organizationId: org.id
+                })
+              }}
+            >
+              <IconWrapper>
+                <Building className="text-primary-foreground dark:text-primary" />
+              </IconWrapper>
+              {org.name}
             </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+          ))}
+
+          <DropdownMenuItem>
+            <DialogTrigger asChild>
+              <Button size="sm" className="w-full gap-2" variant="default">
+                <Plus />
+                <p>New Organization</p>
+              </Button>
+            </DialogTrigger>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <CreateOrganizationDialog />
+    </Dialog>
   )
+}
+
+export function CreateOrganizationDialog() {
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [isSlugEdited, setIsSlugEdited] = useState(false);
+
+  useEffect(() => {
+    if (!isSlugEdited) {
+      const generatedSlug = name.trim().toLowerCase().replace(/\s+/g, "-");
+      setSlug(generatedSlug);
+    }
+  }, [name, isSlugEdited]);
+
+  useEffect(() => {
+    if (open) {
+      setName("");
+      setSlug("");
+      setIsSlugEdited(false);
+    }
+  }, [open]);
+
+  return (
+
+    <DialogContent className="sm:max-w-[425px] w-11/12">
+      <DialogHeader>
+        <DialogTitle>New Organization</DialogTitle>
+        <DialogDescription>
+          Create a new organization to collaborate with your team.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Label>Organization Name</Label>
+          <Input
+            placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Organization Slug</Label>
+          <Input
+            value={slug}
+            onChange={(e) => {
+              setSlug(e.target.value);
+              setIsSlugEdited(true);
+            }}
+            placeholder="Slug"
+          />
+        </div>
+      </div>
+      <DialogFooter>
+        <DialogClose asChild>
+          <Button
+            disabled={loading}
+            onClick={async () => {
+              setLoading(true);
+              await organization.create(
+                {
+                  name: name,
+                  slug: slug,
+                },
+                {
+                  onResponse: () => {
+                    setLoading(false);
+                  },
+                  onSuccess: () => {
+                    toast.success("Organization created successfully");
+                    setOpen(false);
+                  },
+                  onError: (error) => {
+                    toast.error(error.error.message);
+                    setLoading(false);
+                  },
+                },
+              );
+            }}
+          >
+            {loading ? (
+              <Loader2 className="animate-spin" size={16} />
+            ) : (
+              "Create"
+            )}
+          </Button>
+        </DialogClose>
+      </DialogFooter>
+    </DialogContent>
+  );
 }

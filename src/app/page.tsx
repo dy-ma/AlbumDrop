@@ -1,8 +1,10 @@
+import { SignInButton, SignInFallback } from "@/components/auth/sign-in-button";
 import LandingCard from "@/components/landing-card";
 import { LandingNavMenu } from "@/components/nav-menu";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, GalleryVerticalEnd } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default function Home() {
   return (
@@ -15,12 +17,14 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" asChild>
-            <Link href="/app/u">Dashboard</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/signup">Sign Up</Link>
-          </Button>
+          <Link href="/sign-up">
+            <Button variant="outline">
+              Sign Up
+            </Button>
+          </Link>
+          <Suspense fallback={<SignInFallback />}>
+            <SignInButton />
+          </Suspense>
         </div>
       </header>
       <main className="flex flex-col mt-10 w-full h-full">

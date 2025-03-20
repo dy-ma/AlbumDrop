@@ -8,7 +8,8 @@ import {
   verification,
   organization as orgSchema,
   member,
-  invitation
+  invitation,
+  passkey as passKeySchema
 } from "@/db/auth-schema";
 import { sendEmail } from "@/lib/ses";
 import {
@@ -17,7 +18,9 @@ import {
   member as memberRole,
   owner as ownerRole
 } from "./permissions";
-import { organization } from "better-auth/plugins"
+import { admin, multiSession, openAPI, organization, twoFactor } from "better-auth/plugins"
+import { nextCookies } from "better-auth/next-js";
+import { passkey } from "better-auth/plugins/passkey";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -29,7 +32,8 @@ export const auth = betterAuth({
       verification,
       organization: orgSchema,
       member,
-      invitation
+      invitation,
+      passkey: passKeySchema
     }
   }),
   user: {
@@ -46,10 +50,17 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: process.env.NODE_ENV === 'production'
+    requireEmailVerification: process.env.NODE_ENV === 'production',
+    async sendResetPassword(data) {
+      await sendEmail({
+        to: data.user.email,
+        subject: "Reset your password",
+        body: `Click the link to reset your password: ${data.url}`
+      })
+    }
   },
   emailVerification: {
-    sendOnSignUp: process.env.NODE_ENV === 'production', // only send on prod
+    sendOnSignUp: true, // only send on prod
     sendVerificationEmail: async ({ user, url }) => {
       await sendEmail({
         to: user.email,
@@ -64,7 +75,32 @@ export const auth = betterAuth({
       maxAge: 5 * 60 // cache duration in seconds
     }
   },
+  // socialProviders: {
+  //   google: {
+  //     clientId: process.env.GOOGLE_CLIENT_ID!,
+  //     clientSecret: process.env.GOOGLE_CLIENT_SECRET!
+  //   },
+  //   microsoft: {
+  //     clientId: process.env.MICROSOFT_CLIENT_ID!,
+  //     clientSecret: process.env.MICROSOFT_CLIENT_SECRET!
+  //   }
+  // },
   plugins: [
+    multiSession(),
+    openAPI(),
+    twoFactor({
+      otpOptions: {
+        async sendOTP({ user, otp }) {
+          await sendEmail({
+            to: user.email,
+            subject: "Your One Time Password Code",
+            body: `Your code is ${otp}`
+          })
+        }
+      }
+    }),
+    passkey(),
+    admin(),
     organization({
       allowUserToCreateOrganization: async () => {
         // TODO: check stripe subscription
@@ -85,8 +121,7 @@ export const auth = betterAuth({
         })
       },
     }),
+    nextCookies() // sets cookies automatically for server functions
   ]
 })
 
-export type ServerMember = typeof auth.$Infer.Member
-export type ServerOrganization = typeof auth.$Infer.Organization
