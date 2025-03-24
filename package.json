@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "drizzle-kit push && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
+    "db:push": "drizzle-kit push --config drizzle.config.dev.ts",
+    "db:generate:prod": "drizzle-kit generate --config drizzle.config.prod.ts",
+    "db:drop:prod": "drizzle-kit drop --config drizzle.config.prod.ts",
+    "db:migrate:prod": "drizzle-kit migrate --config drizzle.config.prod.ts",
+    "db:push:prod": "drizzle-kit push --config drizzle.config.prod.ts",
     "auth:generate": "bunx @better-auth/cli generate --output src/db/auth-schema.ts"
   },
   "dependencies": {
@@ -50,6 +52,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
     "drizzle-orm": "^0.40.1",
     "embla-carousel-react": "^8.5.2",
     "input-otp": "^1.4.2",

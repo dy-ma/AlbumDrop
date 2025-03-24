@@ -29,6 +29,13 @@
       "when": 1742442741238,
       "tag": "0003_perpetual_prodigy",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1742847837130,
+      "tag": "0004_amazing_goblin_queen",
+      "breakpoints": true
     }
   ]
 }
