@@ -23,4 +23,4 @@ jobs:
       - name: Apply migrations to production
         run: bun drizzle-kit migrate --config drizzle.config.ts
         env:
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABSE_URL_UNPOOLED_DEV}}
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABASE_URL_UNPOOLED_DEV}}
