@@ -18,3 +18,11 @@ export const file = pgTable("file", {
   key: text("key").notNull(),
   albumId: uuid("album_id").references(() => album.id)
 })
+
+export const share = pgTable("share", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  ownerId: text("owner_id").notNull().references(() => user.id),
+  orgId: text("org_id").references(() => organization.id),
+  createdAt: timestamp('created_at').notNull(),
+  albumId: uuid("album_id").notNull().references(() => album.id)
+})
