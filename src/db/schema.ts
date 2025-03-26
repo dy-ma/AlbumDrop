@@ -6,6 +6,7 @@ export const album = pgTable("album", {
   ownerId: text("owner_id").notNull().references(() => user.id),
   orgId: text("org_id").references(() => organization.id),
   name: text("name"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 })
 
 export const file = pgTable("file", {
