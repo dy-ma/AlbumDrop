@@ -7,11 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:push": "drizzle-kit push --config drizzle.config.dev.ts",
-    "db:generate:prod": "drizzle-kit generate --config drizzle.config.prod.ts",
-    "db:drop:prod": "drizzle-kit drop --config drizzle.config.prod.ts",
-    "db:migrate:prod": "drizzle-kit migrate --config drizzle.config.prod.ts",
-    "db:push:prod": "drizzle-kit push --config drizzle.config.prod.ts",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate": "drizzle-kit migrate --config drizzle.config.ts",
     "auth:generate": "bunx @better-auth/cli generate --output src/db/auth-schema.ts"
   },
   "dependencies": {
