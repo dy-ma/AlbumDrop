@@ -1,9 +1,8 @@
-name: Apply schema migrations
+name: Apply schema migrations to development
 
 on:
   push:
     branches:
-      - main
       - dev
 
 jobs:
@@ -22,13 +21,6 @@ jobs:
         run: bun install
 
       - name: Apply migrations to production
-        if: github.ref == 'refs/head/main'
-        run: bun drizzle-kit migrate --config drizzle.config.ts
-        env:
-          DATABASE_URL_UNPOOLED: ${{ secrets.DATABSE_URL_UNPOOLED_PROD}}
-
-      - name: Apply migrations to development
-        if: github.ref == 'refs/head/dev'
         run: bun drizzle-kit migrate --config drizzle.config.ts
         env:
           DATABASE_URL_UNPOOLED: ${{ secrets.DATABSE_URL_UNPOOLED_DEV}}

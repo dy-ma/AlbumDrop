@@ -1,0 +1,26 @@
+name: Apply schema migrations to production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  apply_migrations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies & tooling
+        run: bun install
+
+      - name: Apply migrations to production
+        run: bun drizzle-kit migrate --config drizzle.config.ts
+        env:
+          DATABASE_URL_UNPOOLED: ${{ secrets.DATABSE_URL_UNPOOLED_PROD}}
