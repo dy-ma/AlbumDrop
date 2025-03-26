@@ -43,6 +43,13 @@
       "when": 1743012367992,
       "tag": "0005_mysterious_black_cat",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1743013633659,
+      "tag": "0006_curvy_santa_claus",
+      "breakpoints": true
     }
   ]
 }
