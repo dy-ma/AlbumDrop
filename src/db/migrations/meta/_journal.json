@@ -36,6 +36,13 @@
       "when": 1742847837130,
       "tag": "0004_amazing_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1743012367992,
+      "tag": "0005_mysterious_black_cat",
+      "breakpoints": true
     }
   ]
 }
